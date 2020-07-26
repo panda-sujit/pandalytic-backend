@@ -1,6 +1,6 @@
 {
-  "jwtPrivateKey": "app_testPrivateKey",
-  "db": "mongodb://localhost/vidlydb_test",
+  "jwtPrivateKey": "APP_PRIVATE_KEY_TEST",
+  "db": "mongodb://localhost/db_cms_test",
   "port": "3000",
   "requiresAuth": false
 }

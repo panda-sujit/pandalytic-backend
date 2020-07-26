@@ -2,7 +2,7 @@
   "name": "vidly",
   "version": "1.0.0",
   "description": "",
-  "main": "vidly.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --verbose --detectOpenHandles --maxWorkers=1",
     "start": "node index.js"

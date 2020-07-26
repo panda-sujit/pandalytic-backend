@@ -1,1 +1,0 @@
-This Vidly API Services

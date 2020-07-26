@@ -1,6 +1,6 @@
 {
   "jwtPrivateKey": "",
-  "db": "mongodb://localhost/vidlydb",
+  "db": "mongodb://localhost/db_cms",
   "port": "3000",
   "requiresAuth": false
 }
