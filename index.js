@@ -1,5 +1,6 @@
-const config = require("config");
+const config = require('config');
 const express = require('express');
+const cloudinary = require('cloudinary');
 // const morgan = require('morgan');
 
 const app = express();
