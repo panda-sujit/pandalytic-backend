@@ -1,6 +1,5 @@
 const config = require('config');
 const express = require('express');
-const cloudinary = require('cloudinary');
 // const morgan = require('morgan');
 
 const app = express();
@@ -22,3 +21,6 @@ const port = process.env.PORT || config.get('port');
 const server = app.listen(port, () => console.log(`Server Listening to port ${port}.`));
 
 module.exports = server;
+
+// Heroku link
+// https://mighty-citadel-35112.herokuapp.com/
