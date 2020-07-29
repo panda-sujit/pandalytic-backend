@@ -3,7 +3,9 @@ const express = require('express');
 const cloudinary = require('cloudinary');
 
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const asyncMiddleware = require('../middleware/async');
+const validateObjId = require('../middleware/validateObjectId');
 
 require('../middleware/cloudinary')
 const upload = require('../middleware/multer');
@@ -12,7 +14,12 @@ const { Team, validate } = require('../models/team');
 
 const router = express.Router();
 
-router.post('/', [auth, upload.single('imageUri')], asyncMiddleware(async (req, res) => {
+router.get('/', asyncMiddleware(async (req, res) => {
+  const team = await Team.find().sort('name');
+  res.status(200).send(team);
+}));
+
+router.post('/', [auth, upload.single('imageFile')], asyncMiddleware(async (req, res) => {
   let result;
   const { error } = validate(req.body);
 
@@ -36,6 +43,23 @@ router.post('/', [auth, upload.single('imageUri')], asyncMiddleware(async (req, 
   });
   await team.save();
   return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
+}));
+
+// router.put('/:id', [auth, validateObjId], asyncMiddleware(async(req, res) => {
+//   const {error} = validate(req.body);
+//   if(error) return res.status(400).send(error.details[0].message);
+// }));
+
+router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(async (req, res) => {
+  const teamInfo = await Team.findByIdAndRemove(req.params.id);
+  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
+  res.status(200).send(teamInfo);
+}));
+
+router.get('/:id', validateObjId, asyncMiddleware(async (req, res) => {
+  const teamInfo = await Team.findById(req.params.id);
+  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
+  res.status(200).send(teamInfo);
 }));
 
 module.exports = router;

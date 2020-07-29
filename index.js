@@ -24,3 +24,6 @@ module.exports = server;
 
 // Heroku link
 // https://mighty-citadel-35112.herokuapp.com/
+
+// Mlab link
+// "mongodb://pandalytic:T3chn0l0gy@ds121636.mlab.com:21636/db_pandalytic_cms",
