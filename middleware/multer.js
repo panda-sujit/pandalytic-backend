@@ -1,13 +1,31 @@
 const multer = require('multer');
 
-module.exports = multer({
-  storage: multer.diskStorage({}),
-  fileFilter: (req, file, cb) => {
-    if (!file.mimetype.match(/jpe|jpeg|png|gif$i/)) {
-      cb(new Error('File is not supported'), false)
-      return
-    }
+module.exports = function (req, res, next) {
+  let upload = multer({
+    storage: multer.diskStorage({}),
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.match(/jpe|jpeg|png|gif$i/)) {
+        cb(new Error('File is not supported'), false)
+        return
+      }
 
-    cb(null, true)
-  }
-})
+      cb(null, true)
+    }
+  }).single('imageFile');
+
+  upload(req, res, function (err) {
+    if (req.fileValidationError) {
+      return res.send(req.fileValidationError);
+    }
+    else if (!req.file) {
+      return res.send('Please select an image to upload');
+    }
+    else if (err instanceof multer.MulterError) {
+      return res.send(err);
+    }
+    else if (err) {
+      return res.send(err);
+    }
+    next();
+  });
+}

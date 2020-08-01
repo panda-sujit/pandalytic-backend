@@ -1,5 +1,4 @@
 const express = require('express');
-// const mongoose = require('mongoose');
 const cloudinary = require('cloudinary');
 
 const auth = require('../middleware/auth');
@@ -19,7 +18,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
   res.status(200).send(team);
 }));
 
-router.post('/', [auth, upload.single('imageFile')], asyncMiddleware(async (req, res) => {
+router.post('/', [auth, upload], asyncMiddleware(async (req, res) => {
   let result;
   const { error } = validate(req.body);
 
@@ -45,10 +44,29 @@ router.post('/', [auth, upload.single('imageFile')], asyncMiddleware(async (req,
   return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
 }));
 
-// router.put('/:id', [auth, validateObjId], asyncMiddleware(async(req, res) => {
-//   const {error} = validate(req.body);
-//   if(error) return res.status(400).send(error.details[0].message);
-// }));
+router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(async (req, res) => {
+  let result;
+  console.log(req.file.path)
+
+  // try {
+  //   result = await cloudinary.v2.uploader.upload(req.file.path);
+  // } catch (exceptionError) {
+  //   return res.status(400).send({
+  //     error: exceptionError,
+  //     message: 'Error while uploading image please try again later.'
+  //   });
+  // }
+
+  // const team = new Team({
+  //   name: req.body.name,
+  //   designation: req.body.designation,
+  //   imageUri: result.secure_url,
+  //   shortDescription: req.body.shortDescription,
+  //   media: req.body.media
+  // });
+  // await team.save();
+  // return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
+}));
 
 router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(async (req, res) => {
   const teamInfo = await Team.findByIdAndRemove(req.params.id);
