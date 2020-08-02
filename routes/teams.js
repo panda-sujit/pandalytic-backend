@@ -1,83 +1,21 @@
 const express = require('express');
-const cloudinary = require('cloudinary');
 
+require('../middleware/cloudinary');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const upload = require('../middleware/multer');
 const asyncMiddleware = require('../middleware/async');
 const validateObjId = require('../middleware/validateObjectId');
 
-require('../middleware/cloudinary')
-const upload = require('../middleware/multer');
-
-const { Team, validate } = require('../models/team');
+const { getTeamInfo, postTeamInfo, deleteTeamInfo, getTeamInfoById, updateTeamInfo } = require('../controllers/team.controller');
 
 const router = express.Router();
 
-router.get('/', asyncMiddleware(async (req, res) => {
-  const team = await Team.find().sort('name');
-  res.status(200).send(team);
-}));
+router.get('/', asyncMiddleware(getTeamInfo));
+router.post('/', [auth, upload], asyncMiddleware(postTeamInfo));
+router.get('/:id', validateObjId, asyncMiddleware(getTeamInfoById));
+router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateTeamInfo));
+router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamInfo));
 
-router.post('/', [auth, upload], asyncMiddleware(async (req, res) => {
-  let result;
-  const { error } = validate(req.body);
-
-  if (error) return res.status(400).send(error.details[0].message);
-
-  try {
-    result = await cloudinary.v2.uploader.upload(req.file.path);
-  } catch (exceptionError) {
-    return res.status(400).send({
-      error: exceptionError,
-      message: 'Error while uploading image please try again later.'
-    });
-  }
-
-  const team = new Team({
-    name: req.body.name,
-    designation: req.body.designation,
-    imageUri: result.secure_url,
-    shortDescription: req.body.shortDescription,
-    media: req.body.media
-  });
-  await team.save();
-  return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
-}));
-
-router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(async (req, res) => {
-  let result;
-  console.log(req.file.path)
-
-  // try {
-  //   result = await cloudinary.v2.uploader.upload(req.file.path);
-  // } catch (exceptionError) {
-  //   return res.status(400).send({
-  //     error: exceptionError,
-  //     message: 'Error while uploading image please try again later.'
-  //   });
-  // }
-
-  // const team = new Team({
-  //   name: req.body.name,
-  //   designation: req.body.designation,
-  //   imageUri: result.secure_url,
-  //   shortDescription: req.body.shortDescription,
-  //   media: req.body.media
-  // });
-  // await team.save();
-  // return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
-}));
-
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(async (req, res) => {
-  const teamInfo = await Team.findByIdAndRemove(req.params.id);
-  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send(teamInfo);
-}));
-
-router.get('/:id', validateObjId, asyncMiddleware(async (req, res) => {
-  const teamInfo = await Team.findById(req.params.id);
-  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send(teamInfo);
-}));
 
 module.exports = router;
