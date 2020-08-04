@@ -15,16 +15,15 @@ exports.getTeamInfo = async (req, res) => {
 
     const count = await Team.countDocuments();
 
-    res.status(200).send({
+    return res.status(200).send({
       teamInfoList,
       totalPages: Math.ceil(count / limit),
       currentPage: page
     });
   } catch (err) {
     console.error(err.message);
+    return res.status(400).send('Error', err.message);
   }
-
-  res.status(200).send(team);
 }
 
 exports.postTeamInfo = async (req, res) => {
