@@ -9,8 +9,8 @@ const { getCareerList, postCareer, getCareerById, updateCareerById, deleteCareer
 
 const router = express.Router();
 
-router.post('/', asyncMiddleware(getCareerList));
-router.get('/', auth, asyncMiddleware(postCareer));
+router.get('/', asyncMiddleware(getCareerList));
+router.post('/', auth, asyncMiddleware(postCareer));
 router.get('/:id', [validateObjId], asyncMiddleware(getCareerById));
 router.put('/:id', [auth, validateObjId], asyncMiddleware(updateCareerById));
 router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteCareerById));

@@ -47,7 +47,7 @@ const Career = mongoose.model('Career', careerSchema);
 const validateCareer = (reqCareerData) => {
   const schema = Joi.object({
     tag: Joi.array().required(),
-    applyDate: Joi.date().require(),
+    applyDate: Joi.allow(''),
     description: Joi.string().min(120).required(),
     title: Joi.string().min(5).max(120).required(),
     opening: Joi.number().min(0).max(255).required(),

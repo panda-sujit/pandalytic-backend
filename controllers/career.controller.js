@@ -46,27 +46,9 @@ exports.deleteCareerById = async (req, res) => {
 }
 
 exports.updateCareerById = async (req, res) => {
-  // let result;
-  // const response = await Team.findById(req.params.id);
-
-  // if (!response) return res.status(404).send('The team info with the given ID was not found');
-
-  // if (req.file) {
-  //   try {
-  //     result = await cloudinary.v2.uploader.upload(req.file.path);
-  //     req.body['imageUri'] = result.secure_url;
-  //   } catch (exceptionError) {
-  //     return res.status(400).send({
-  //       error: exceptionError,
-  //       message: 'Error while uploading image please try again later.'
-  //     });
-  //   }
-  // }
-  // req.body['updatedAt'] = Date.now();
-
-  // const teamInfoUpdated = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-  // if (!teamInfoUpdated) return res.status(404).send('The team info with the given ID was not found');
-  // res.status(200).send(teamInfoUpdated);
+  req.body['updatedAt'] = Date.now();
+  const careerUpdated = await Career.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!careerUpdated) return res.status(404).send('The career info with the given ID was not found');
+  res.status(200).send(careerUpdated);
 }
 

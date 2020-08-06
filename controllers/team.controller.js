@@ -3,7 +3,6 @@ const cloudinary = require('cloudinary');
 const { Team, validate } = require('../models/team');
 
 
-
 exports.getTeamInfo = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
 
