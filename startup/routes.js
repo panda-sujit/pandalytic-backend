@@ -14,17 +14,12 @@ const customers = require('../routes/customers');
 const contactus = require('../routes/contactus');
 const testimonials = require('../routes/testimonial');
 
-const cors = require('../middleware/cors');
 const error = require('../middleware/error');
 
 module.exports = function (app) {
-
-  app.configure(function () {
-    app.use(cors);
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.use(express.static('public'));
-  });
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.static('public'));
 
   app.use('/', home);
   app.use('/api/auth', auth);
