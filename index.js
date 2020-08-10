@@ -5,10 +5,10 @@ const express = require('express');
 
 const app = express();
 const corsOption = {
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
-  allowedHeaders: ['Content-Type', 'Authorization']
+  'allowedHeaders': ['Authorization', 'Content-Type'],
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false
 }
 app.use(cors(corsOption));
 app.options('*', cors(corsOption));
