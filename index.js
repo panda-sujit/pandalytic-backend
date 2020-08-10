@@ -5,6 +5,7 @@ const express = require('express');
 
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
+app.options('*', cors());
 require('./startup/logging')();
 require('./startup/routes')(app);
 require('./startup/db')();
