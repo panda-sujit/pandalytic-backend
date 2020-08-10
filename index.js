@@ -8,7 +8,7 @@ const corsOption = {
   origin: '*',
   credentials: true,
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }
 app.use(cors(corsOption));
 app.options('*', cors(corsOption));
