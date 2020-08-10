@@ -5,7 +5,7 @@ const express = require('express');
 
 const app = express();
 const corsOption = {
-  origin: '*',
+  origin: true,
   credentials: true,
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
   allowedHeaders: ['Content-Type', 'Authorization']
