@@ -1,17 +1,25 @@
-const cors = require('cors');
+// const cors = require('cors');
 const config = require('config');
 const express = require('express');
 // const morgan = require('morgan');
 
 const app = express();
-const corsOption = {
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
-}
-app.use(cors(corsOption));
-app.options('*', cors(corsOption));
+// const corsOption = {
+//   origin: true,
+//   credentials: true,
+//   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
+//   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+// }
+// app.use(cors(corsOption));
+// app.options('*', cors(corsOption));
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth-token");
+  next();
+});
+
 require('./startup/logging')();
 require('./startup/routes')(app);
 require('./startup/db')();
