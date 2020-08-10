@@ -4,8 +4,14 @@ const express = require('express');
 // const morgan = require('morgan');
 
 const app = express();
-app.use(cors({ credentials: true, origin: true }));
-app.options('*', cors());
+const corsOption = {
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+}
+app.use(cors(corsOption));
+app.options('*', cors(corsOption));
 require('./startup/logging')();
 require('./startup/routes')(app);
 require('./startup/db')();
