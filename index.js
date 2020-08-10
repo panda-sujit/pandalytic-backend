@@ -1,4 +1,4 @@
-// const cors = require('cors');
+const cors = require('cors');
 const config = require('config');
 const express = require('express');
 // const morgan = require('morgan');
@@ -13,6 +13,7 @@ const app = express();
 // app.use(cors(corsOption));
 // app.options('*', cors(corsOption));
 
+app.use(cors());
 
 require('./startup/logging')();
 require('./startup/routes')(app);

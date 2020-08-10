@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 
 const auth = require('../routes/auth');
@@ -24,6 +25,8 @@ module.exports = function (app) {
     res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,Authorization');
     next();
   });
+
+  app.use(cors());
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
