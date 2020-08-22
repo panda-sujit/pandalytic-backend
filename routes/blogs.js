@@ -19,7 +19,7 @@ const {
 const router = express.Router();
 
 router.get('/', asyncMiddleware(getBlogList));
-router.get('/:slug', asyncMiddleware(getBlogBySlug));
+router.get('/slug/:slug', asyncMiddleware(getBlogBySlug));
 router.post('/', [auth, upload], asyncMiddleware(postBlog));
 router.get('/:id', validateObjId, asyncMiddleware(getBlogById));
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateBlogById));
