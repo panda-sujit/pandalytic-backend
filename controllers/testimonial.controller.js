@@ -46,8 +46,8 @@ exports.postTestimonialInfo = async (req, res) => {
     designation: req.body.designation,
     organization: req.body.organization
   });
-  await testimonial.save();
-  return res.status(200).send('Testimonial has been save successfully. But wont appear on home screen until Admin verified it');
+  const savedData = await testimonial.save();
+  return res.status(200).send({ message: 'Testimonial has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
 }
 
 exports.deleteTestimonialById = async (req, res) => {

@@ -29,8 +29,8 @@ exports.postCareer = async (req, res) => {
 
   const career = new Career(req.body);
 
-  await career.save();
-  return res.status(200).send('Career has been save successfully.');
+  const savedData = await career.save();
+  return res.status(200).send({ message: 'Career has been save successfully.', result: savedData });
 }
 
 exports.getCareerById = async (req, res) => {

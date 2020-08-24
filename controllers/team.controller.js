@@ -46,8 +46,8 @@ exports.postTeamInfo = async (req, res) => {
     shortDescription: req.body.shortDescription,
     media: req.body.media
   });
-  await team.save();
-  return res.status(200).send('Team info has been save successfully. But wont appear on home screen until Admin verified it');
+  const savedData = await team.save();
+  return res.status(200).send({ message: 'Team info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
 }
 
 exports.deleteTeamInfo = async (req, res) => {

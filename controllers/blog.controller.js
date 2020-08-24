@@ -49,8 +49,8 @@ exports.postBlog = async (req, res) => {
     readMin: req.body.readMin,
     tag: req.body.tag,
   });
-  await blog.save();
-  return res.status(200).send('Blog info has been save successfully. But wont appear on home screen until Admin verified it');
+  const savedData = await blog.save();
+  return res.status(200).send({ message: 'Blog info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
 }
 
 exports.deleteBlogById = async (req, res) => {

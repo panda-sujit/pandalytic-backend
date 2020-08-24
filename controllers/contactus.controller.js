@@ -31,8 +31,8 @@ exports.postContactUsQueries = async (req, res) => {
 
   const queries = new ContactUs(req.body);
 
-  await queries.save();
-  return res.status(200).send('Queries has been save successfully.');
+  const savedData = await queries.save();
+  return res.status(200).send({ message: 'Queries has been save successfully.', result: savedData });
 }
 
 exports.getContactUsQueriesById = async (req, res) => {

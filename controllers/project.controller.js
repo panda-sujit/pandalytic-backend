@@ -46,8 +46,8 @@ exports.postProjectInfo = async (req, res) => {
     projectLink: req.body.projectLink,
     tag: req.body.tag
   });
-  await project.save();
-  return res.status(200).send('Project has been save successfully. But wont appear on home screen until Admin verified it');
+  const savedData = await project.save();
+  return res.status(200).send({ message: 'Project has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
 }
 
 exports.deleteProjectById = async (req, res) => {
