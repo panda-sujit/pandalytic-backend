@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
+  imageUri: {
+    type: String,
+  },
   isAdmin: {
     type: Boolean,
     default: false

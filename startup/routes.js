@@ -6,13 +6,10 @@ const home = require('../routes/home');
 const blogs = require('../routes/blogs');
 const teams = require('../routes/teams');
 const users = require('../routes/users');
-const genres = require('../routes/genres');
-const movies = require('../routes/movies');
 const careers = require('../routes/career');
-const rentals = require('../routes/rentals');
-const returns = require('../routes/returns');
 const projects = require('../routes/project');
-const customers = require('../routes/customers');
+const pricings = require('../routes/pricings');
+const newsfeed = require('../routes/newsFeed');
 const contactus = require('../routes/contactus');
 const testimonials = require('../routes/testimonial');
 
@@ -30,13 +27,10 @@ module.exports = function (app) {
   app.use('/api/blogs', blogs)
   app.use('/api/users', users);
   app.use('/api/teams', teams);
-  app.use('/api/genres', genres);
-  app.use('/api/movies', movies);
   app.use('/api/careers', careers);
-  app.use('/api/rentals', rentals);
-  app.use('/api/returns', returns);
   app.use('/api/projects', projects);
-  app.use('/api/customers', customers);
+  app.use('/api/pricings', pricings);
+  app.use('/api/newsfeed', newsfeed);
   app.use('/api/contactus', contactus);
   app.use('/api/testimonial', testimonials);
 
