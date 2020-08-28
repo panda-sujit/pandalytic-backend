@@ -42,13 +42,13 @@ exports.getCareerById = async (req, res) => {
 exports.deleteCareerById = async (req, res) => {
   const career = await Career.findByIdAndRemove(req.params.id);
   if (!career) return res.status(404).send('The career info with the given ID was not found.');
-  res.status(200).send(career);
+  res.status(200).send({ message: 'Data is deleted successfully.', result: career });
 }
 
 exports.updateCareerById = async (req, res) => {
   req.body['updatedAt'] = Date.now();
   const careerUpdated = await Career.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  if (!careerUpdated) return res.status(404).send('The career info with the given ID was not found');
-  res.status(200).send(careerUpdated);
+  if (!careerUpdated) return res.status(404).send('The career info with the given ID was not found.');
+  res.status(200).send({ message: 'The career info with the given ID is updated successfully.', result: careerUpdated });
 }
 

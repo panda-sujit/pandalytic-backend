@@ -47,13 +47,13 @@ exports.postTeamInfo = async (req, res) => {
     media: req.body.media
   });
   const savedData = await team.save();
-  return res.status(200).send({ message: 'Team info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'Team info has been save successfully.', result: savedData });
 }
 
 exports.deleteTeamInfo = async (req, res) => {
   const teamInfo = await Team.findByIdAndRemove(req.params.id);
   if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send(teamInfo);
+  res.status(200).send({ message: 'Data is deleted successfully.', result: teamInfo });
 }
 
 exports.getTeamInfoById = async (req, res) => {
@@ -66,7 +66,7 @@ exports.updateTeamInfo = async (req, res) => {
   let result;
   const response = await Team.findById(req.params.id);
 
-  if (!response) return res.status(404).send('The team info with the given ID was not found');
+  if (!response) return res.status(404).send('The team info with the given ID was not found.');
 
   if (req.file) {
     try {
@@ -83,7 +83,7 @@ exports.updateTeamInfo = async (req, res) => {
 
   const teamInfoUpdated = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  if (!teamInfoUpdated) return res.status(404).send('The team info with the given ID was not found');
-  res.status(200).send(teamInfoUpdated);
+  if (!teamInfoUpdated) return res.status(404).send('The team info with the given ID was not found.');
+  res.status(200).send({ message: 'The team info with the given ID is updated successfully.', result: teamInfoUpdated });
 }
 

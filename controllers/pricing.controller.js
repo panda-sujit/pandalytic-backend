@@ -35,13 +35,13 @@ exports.postPricing = async (req, res) => {
     features: req.body.features,
   });
   const savedData = await pricing.save();
-  return res.status(200).send({ message: 'Pricing info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'Pricing info has been save successfully.', result: savedData });
 }
 
 exports.deletePricingById = async (req, res) => {
   const pricing = await Pricing.findByIdAndRemove(req.params.id);
   if (!pricing) return res.status(404).send('The pricing with the given ID was not found.');
-  res.status(200).send(pricing);
+  res.status(200).send({ message: 'Data is deleted successfully.', result: pricing });
 }
 
 exports.getPricingById = async (req, res) => {
@@ -53,7 +53,7 @@ exports.getPricingById = async (req, res) => {
 exports.updatePricingById = async (req, res) => {
   req.body['updatedAt'] = Date.now();
   const pricingInfoUpdated = await Pricing.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  if (!pricingInfoUpdated) return res.status(404).send('The pricing info with the given ID was not found');
-  res.status(200).send(pricingInfoUpdated);
+  if (!pricingInfoUpdated) return res.status(404).send('The pricing info with the given ID was not found.');
+  res.status(200).send({ message: 'The pricing info with the given ID is updated successfully.', result: pricingInfoUpdated });
 }
 

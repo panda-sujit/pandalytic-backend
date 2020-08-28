@@ -47,13 +47,13 @@ exports.postProjectInfo = async (req, res) => {
     tag: req.body.tag
   });
   const savedData = await project.save();
-  return res.status(200).send({ message: 'Project has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'Project has been save successfully.', result: savedData });
 }
 
 exports.deleteProjectById = async (req, res) => {
   const project = await Project.findByIdAndRemove(req.params.id);
   if (!project) return res.status(404).send('The project with the given ID was not found.');
-  res.status(200).send(project);
+  res.status(200).send({ message: 'Data is deleted successfully', result: project });
 }
 
 exports.getProjectById = async (req, res) => {
@@ -66,7 +66,7 @@ exports.updateProjectById = async (req, res) => {
   let result;
   const response = await Project.findById(req.params.id);
 
-  if (!response) return res.status(404).send('The project info with the given ID was not found');
+  if (!response) return res.status(404).send('The project info with the given ID was not found.');
 
   if (req.file) {
     try {
@@ -83,7 +83,7 @@ exports.updateProjectById = async (req, res) => {
 
   const projectUpdated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  if (!projectUpdated) return res.status(404).send('The project info with the given ID was not found');
-  res.status(200).send(projectUpdated);
+  if (!projectUpdated) return res.status(404).send('The project info with the given ID was not found.');
+  res.status(200).send({ message: 'The project info with the given ID is updated successfully.', result: projectUpdated });
 }
 

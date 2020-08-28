@@ -50,13 +50,13 @@ exports.postBlog = async (req, res) => {
     tag: req.body.tag,
   });
   const savedData = await blog.save();
-  return res.status(200).send({ message: 'Blog info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'Blog info has been save successfully.', result: savedData });
 }
 
 exports.deleteBlogById = async (req, res) => {
   const blog = await Blog.findByIdAndRemove(req.params.id);
-  if (!blog) return res.status(404).send('The blog with the given ID was not found.');
-  res.status(200).send(blog);
+  if (!blog) return res.status(404).send({ message: 'The blog with the given ID was not found.' });
+  res.status(200).send({ message: 'Data is deleted successfully.', result: blog });
 }
 
 exports.getBlogById = async (req, res) => {
@@ -75,7 +75,7 @@ exports.updateBlogById = async (req, res) => {
   let result;
   const response = await Blog.findById(req.params.id);
 
-  if (!response) return res.status(404).send('The blog info with the given ID was not found');
+  if (!response) return res.status(404).send('The blog info with the given ID was not found.');
 
   if (req.file) {
     try {
@@ -95,7 +95,7 @@ exports.updateBlogById = async (req, res) => {
 
   const blogInfoUpdated = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  if (!blogInfoUpdated) return res.status(404).send('The blog info with the given ID was not found');
-  res.status(200).send(blogInfoUpdated);
+  if (!blogInfoUpdated) return res.status(404).send('The blog info with the given ID was not found.');
+  res.status(200).send({ message: 'The blog with the given ID is updated successfully.', result: blogInfoUpdated });
 }
 

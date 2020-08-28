@@ -50,13 +50,13 @@ exports.postNewsFeed = async (req, res) => {
     tag: req.body.tag,
   });
   const savedData = await newsFeed.save();
-  return res.status(200).send({ message: 'News Feed info has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'News Feed info has been save successfully.', result: savedData });
 }
 
 exports.deleteNewsFeedById = async (req, res) => {
   const newsFeed = await NewsFeed.findByIdAndRemove(req.params.id);
   if (!newsFeed) return res.status(404).send('The news feed with the given ID was not found.');
-  res.status(200).send(newsFeed);
+  res.status(200).send({ message: 'Data is deleted successfully.', result: newsFeed });
 }
 
 exports.getNewsFeedById = async (req, res) => {
@@ -75,7 +75,7 @@ exports.updateNewsFeedById = async (req, res) => {
   let result;
   const response = await NewsFeed.findById(req.params.id);
 
-  if (!response) return res.status(404).send('The news feed info with the given ID was not found');
+  if (!response) return res.status(404).send('The news feed info with the given ID was not found.');
 
   if (req.file) {
     try {
@@ -95,7 +95,7 @@ exports.updateNewsFeedById = async (req, res) => {
 
   const newsFeedInfoUpdated = await NewsFeed.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  if (!newsFeedInfoUpdated) return res.status(404).send('The news feed info with the given ID was not found');
-  res.status(200).send(newsFeedInfoUpdated);
+  if (!newsFeedInfoUpdated) return res.status(404).send('The news feed info with the given ID was not found.');
+  res.status(200).send({ message: 'The news feed with the given ID is updated successfully.', result: newsFeedInfoUpdated });
 }
 

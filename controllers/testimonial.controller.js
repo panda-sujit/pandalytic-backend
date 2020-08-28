@@ -47,13 +47,13 @@ exports.postTestimonialInfo = async (req, res) => {
     organization: req.body.organization
   });
   const savedData = await testimonial.save();
-  return res.status(200).send({ message: 'Testimonial has been save successfully. But wont appear on home screen until Admin verified it', result: savedData });
+  return res.status(200).send({ message: 'Testimonial has been save successfully.', result: savedData });
 }
 
 exports.deleteTestimonialById = async (req, res) => {
   const testimonial = await Testimonial.findByIdAndRemove(req.params.id);
   if (!testimonial) return res.status(404).send('The testimonial with the given ID was not found.');
-  res.status(200).send(testimonial);
+  res.status(200).send({ message: 'Data is deleted successfully.', result: testimonial });
 }
 
 exports.getTestimonialById = async (req, res) => {
@@ -66,7 +66,7 @@ exports.updateTestimonialById = async (req, res) => {
   let result;
   const response = await Testimonial.findById(req.params.id);
 
-  if (!response) return res.status(404).send('The testimonial info with the given ID was not found');
+  if (!response) return res.status(404).send('The testimonial info with the given ID was not found.');
 
   if (req.file) {
     try {
@@ -83,7 +83,7 @@ exports.updateTestimonialById = async (req, res) => {
 
   const testimonialUpdated = await Testimonial.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  if (!testimonialUpdated) return res.status(404).send('The testimonial info with the given ID was not found');
-  res.status(200).send(testimonialUpdated);
+  if (!testimonialUpdated) return res.status(404).send('The testimonial info with the given ID was not found.');
+  res.status(200).send({ message: 'The testimonial with the given ID is updated successfully.', result: testimonialUpdated });
 }
 
