@@ -23,6 +23,10 @@ const teamSchema = new mongoose.Schema({
     minlength: 120,
     required: true,
   },
+  teamCategory: {
+    type: String,
+    required: true
+  },
   media: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
@@ -48,6 +52,7 @@ const validateTeamInfo = (reqTeamInfo) => {
     name: Joi.string().min(5).max(50).required(),
     designation: Joi.string().min(5).max(50).required(),
     imageUri: Joi.string().allow(''),
+    teamCategory: Joi.string().required(),
     shortDescription: Joi.string().min(120).required(),
     media: Joi.object()
   });

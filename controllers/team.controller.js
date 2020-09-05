@@ -44,6 +44,7 @@ exports.postTeamInfo = async (req, res) => {
     designation: req.body.designation,
     imageUri: result.secure_url,
     shortDescription: req.body.shortDescription,
+    teamCategory: req.body.teamCategory,
     media: req.body.media
   });
   const savedData = await team.save();
