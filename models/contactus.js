@@ -10,8 +10,6 @@ const contactUsSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    trim: true,
-    unique: true,
     minlength: 5,
     maxlength: 255,
     required: true,
