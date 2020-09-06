@@ -6,94 +6,154 @@ const commonHelper = require('../helpers/common.helper');
 const { Team, validate } = require('../models/team');
 const { TeamCategory, validateTeamCategoryInfo } = require('../models/teamCategory');
 
+/* ****************************************
+ *
+ * REST API Controller for Team
+ *
+ * ****************************************/
 
-exports.getTeamInfo = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
-
+exports.getTeamListWithAuthToken = async (req, res) => {
   try {
-    const teamInfoList = await Team.find()
-      .populate([
-        { path: 'teamCategory', model: 'TeamCategory', select: 'title' },
-      ])
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .exec();
+    let { page, limit, populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 10, false);
+    populate = [
+      {
+        path: 'teamCategory',
+        model: 'TeamCategory',
+        select: 'title'
+      },
+    ]
 
-    const count = await Team.countDocuments();
+    selectQuery = 'name designation shortDescription teamCategory imageUri media isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    if (req.query.name) {
+      searchQuery = {
+        name: {
+          $regex: req.query.name,
+          $options: 'i',
+        },
+        ...searchQuery,
+      };
+    }
+    let teamList = await commonHelper.getQueryRequest(Team, page, limit, sortQuery, searchQuery, selectQuery, populate);
 
-    return res.status(200).send({
-      teamInfoList,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page
-    });
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).send('Error', err.message);
+    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamList.data, 'Team List get successfully.', page, limit, teamList.totalData, teamList.totalPages);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+  }
+}
+
+exports.getTeamListWithoutAuthToken = async (req, res) => {
+  try {
+    let { populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
+    populate = [
+      {
+        path: 'teamCategory',
+        model: 'TeamCategory',
+        select: 'title'
+      },
+    ]
+
+    selectQuery = 'name designation shortDescription teamCategory imageUri media createdAt';
+
+    searchQuery = {
+      isActive: true,
+      ...searchQuery,
+    };
+    if (req.query.name) {
+      searchQuery = {
+        name: {
+          $regex: req.query.name,
+          $options: 'i',
+        },
+        ...searchQuery,
+      };
+    }
+
+    let teamList = await Team
+      .find(searchQuery)
+      .select(selectQuery)
+      .sort(sortQuery)
+      .populate(populate);
+    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamList, 'Team List get successfully.', null, null, null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
 }
 
 exports.postTeamInfo = async (req, res) => {
-  let result;
-  const { error } = validate(req.body);
-
-  if (error) return res.status(400).send(error.details[0].message);
   try {
-    result = await cloudinary.v2.uploader.upload(req.file.path);
-  } catch (exceptionError) {
-    return res.status(400).send({
-      error: exceptionError,
-      message: 'Error while uploading image please try again later.'
-    });
-  }
+    let result;
+    const { error } = validate(req.body);
+    if (error) throw error;
 
-  const team = new Team({
-    name: req.body.name,
-    designation: req.body.designation,
-    imageUri: result.secure_url,
-    shortDescription: req.body.shortDescription,
-    teamCategory: req.body.teamCategory,
-    media: req.body.media
-  });
-  const savedData = await team.save();
-  return res.status(200).send({ message: 'Team info has been save successfully.', result: savedData });
+    if (req.file) {
+      result = await cloudinary.v2.uploader.upload(req.file.path);
+      if (!result) throw error;
+      req.body.imageUri = result.secure_url;
+    }
+
+    const newTeamObj = new Team(req.body);
+    const savedData = await newTeamObj.save();
+    return commonHelper.sendResponse(res, httpStatus.OK, true, savedData, null, 'Team Member has been save successfully.', null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error.details[0].message, null);
+  }
 }
 
-exports.deleteTeamInfo = async (req, res) => {
-  const teamInfo = await Team.findByIdAndRemove(req.params.id);
-  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send({ message: 'Data is deleted successfully.', result: teamInfo });
+exports.deleteTeamInfoById = async (req, res) => {
+  try {
+    const teamMemberDetailObj = await Team.findByIdAndUpdate(req.params.id, {
+      $set: {
+        isDeleted: true,
+        deletedAt: new Date(),
+      },
+    });
+    if (!teamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamMemberDetailObj, null, 'The team member details with the given ID was not found.', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, teamMemberDetailObj, null, 'Team Member Details is deleted successfully.', null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+  }
 }
 
 exports.getTeamInfoById = async (req, res) => {
-  const teamInfo = await Team.findById(req.params.id);
-  if (!teamInfo) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send(teamInfo);
-}
-
-exports.updateTeamInfo = async (req, res) => {
-  let result;
-  const response = await Team.findById(req.params.id);
-
-  if (!response) return res.status(404).send('The team info with the given ID was not found.');
-
-  if (req.file) {
-    try {
-      result = await cloudinary.v2.uploader.upload(req.file.path);
-      req.body['imageUri'] = result.secure_url;
-    } catch (exceptionError) {
-      return res.status(400).send({
-        error: exceptionError,
-        message: 'Error while uploading image please try again later.'
-      });
-    }
+  try {
+    const teamMemberDetailObj = await Team.findById(req.params.id).populate([
+      { path: 'teamCategory', model: 'TeamCategory', select: 'title' },
+    ]);
+    if (!teamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamMemberDetailObj, null, 'The team category with the given ID was not found.', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, teamMemberDetailObj, null, 'Team Member Details Found.', null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
-  req.body['updatedAt'] = Date.now();
-
-  const teamInfoUpdated = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-  if (!teamInfoUpdated) return res.status(404).send('The team info with the given ID was not found.');
-  res.status(200).send({ message: 'The team info with the given ID is updated successfully.', result: teamInfoUpdated });
 }
+
+exports.updateTeamInfoById = async (req, res) => {
+  try {
+    req.body.updatedAt = new Date();
+    // req.body.updatedBy = req.user.id;
+    if (req.file) {
+      result = await cloudinary.v2.uploader.upload(req.file.path);
+      if (!result) throw error;
+      req.body.imageUri = result.secure_url;
+    }
+    const updatedTeamMemberDetailObj = await TeamCategory.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true },
+    );
+    if (!updatedTeamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, updatedTeamMemberDetailObj, null, 'The team member detail with the given ID was not found.', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, updatedTeamMemberDetailObj, null, 'The team member detail with the given ID is updated successfully.', null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+  }
+}
+
+/* ****************************************
+ *
+ * REST API Controller for Team Category
+ *
+ * ****************************************/
 
 exports.getTeamCategoryWithAuthToken = async (req, res) => {
   try {
@@ -111,15 +171,16 @@ exports.getTeamCategoryWithAuthToken = async (req, res) => {
     }
     let teamCategory = await commonHelper.getQueryRequest(TeamCategory, page, limit, sortQuery, searchQuery, selectQuery, populate);
 
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory.data, 'Team Category get successfully.', page, limit, teamCategory.totalData);
+    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory.data, 'Team Category get successfully.', page, limit, teamCategory.totalData, teamCategory.totalPages);
   } catch (error) {
+
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
 }
 
 exports.getTeamCategoryWithoutAuthToken = async (req, res) => {
   try {
-    let { page, limit, populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
+    let { selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
 
     selectQuery = 'title description createdAt';
 
@@ -127,17 +188,21 @@ exports.getTeamCategoryWithoutAuthToken = async (req, res) => {
       isActive: true,
       ...searchQuery,
     };
-    if (req.query.title) {
+    if (req.query.name) {
       searchQuery = {
-        title: {
-          $regex: req.query.title,
+        name: {
+          $regex: req.query.name,
           $options: 'i',
         },
         ...searchQuery,
       };
     }
-    let teamCategory = await commonHelper.getQueryRequest(TeamCategory, page, limit, sortQuery, searchQuery, selectQuery, populate);
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory.data, 'Team Category get successfully.', page, limit, teamCategory.totalData);
+
+    let teamCategory = await TeamCategory
+      .find(searchQuery)
+      .select(selectQuery)
+      .sort(sortQuery)
+    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory, 'Team Category get successfully.', null, null, null);
   } catch (error) {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
@@ -169,24 +234,13 @@ exports.deleteTeamCategoryById = async (req, res) => {
   } catch (error) {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
-
-}
-
-exports.deleteTeamCategoryByIdPermanently = async (req, res) => {
-  try {
-    const teamCategory = await TeamCategory.findByIdAndRemove(req.params.id);
-    if (!teamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamCategory, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category is deleted Permanently.', null);
-  } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
-  }
 }
 
 exports.getTeamCategoryById = async (req, res) => {
   try {
     const teamCategory = await TeamCategory.findById(req.params.id);
     if (!teamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamCategory, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category Founded', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category Found.', null);
   } catch (error) {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
@@ -209,4 +263,14 @@ exports.updateTeamCategoryById = async (req, res) => {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
 }
+
+// exports.deleteTeamCategoryByIdPermanently = async (req, res) => {
+//   try {
+//     const teamCategory = await TeamCategory.findByIdAndRemove(req.params.id);
+//     if (!teamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamCategory, null, 'The team category with the given ID was not found.', null);
+//     return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category is deleted Permanently.', null);
+//   } catch (error) {
+//     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+//   }
+// }
 

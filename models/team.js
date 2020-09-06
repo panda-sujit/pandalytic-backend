@@ -15,7 +15,7 @@ const teamSchema = new mongoose.Schema({
   designation: {
     type: String,
     minlength: 5,
-    maxlength: 50,
+    maxlength: 120,
     required: true
   },
   shortDescription: {
@@ -30,7 +30,19 @@ const teamSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
+    required: true,
+    default: true,
+  },
+  isDeleted: {
+    type: Boolean,
     default: false,
+  },
+  deletedAt: {
+    type: Date,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   createdAt: {
     type: Date,
@@ -38,7 +50,11 @@ const teamSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date,
-  }
+  },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 const Team = mongoose.model('Team', teamSchema);
@@ -50,6 +66,7 @@ const validateTeamInfo = (reqTeamInfo) => {
     imageUri: Joi.string().allow(''),
     teamCategory: Joi.string().required(),
     shortDescription: Joi.string().allow(''),
+    isActive: Joi.boolean().required(),
     media: Joi.object()
   });
   return schema.validate(reqTeamInfo)

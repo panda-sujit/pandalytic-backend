@@ -100,13 +100,14 @@ commonHelper.sendResponse = (res, status, success, data, errors, msg, token) => 
   return res.status(status).json(response);
 };
 
-commonHelper.paginationSendResponse = (res, status, success, data, msg, pageno, pagelimit, totalData) => {
+commonHelper.paginationSendResponse = (res, status, success, data, msg, pageno, pagelimit, totalData, totalPages) => {
   const response = {};
   if (data) response.data = data;
   if (success !== null) response.success = success;
   if (msg) response.msg = msg;
-  if (pageno) response.page = pageno;
+  if (pageno) response.currentPage = pageno;
   if (pagelimit) response.limit = pagelimit;
+  if (totalPages) response.totalPages = totalPages;
   if (typeof totalData === 'number') response.totalData = totalData;
   return res.status(status).json(response);
 };
@@ -122,11 +123,13 @@ commonHelper.getQueryRequest = async (model, page, limit, sortQuery, findquery, 
       .limit(limit * 1)
       .populate(populate);
     datas.totalData = await model.countDocuments(findquery);
+    datas.totalPages = Math.ceil(datas.totalData / limit);
     return datas;
   } catch (err) {
     throw err;
   }
 };
+
 commonHelper.sanitize = (req, sanitizeArray) => {
   sanitizeArray.forEach(sanitizeObj => {
     let sanitizefield = req.body[sanitizeObj.field];

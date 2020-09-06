@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const teamCategorySchema = new mongoose.Schema({
   title: {
     type: String,
+    minlength: 5,
     required: true,
   },
   description: {
@@ -42,7 +43,7 @@ const TeamCategory = mongoose.model('TeamCategory', teamCategorySchema);
 
 const validateTeamCategoryInfo = (reqTeamInfo) => {
   const schema = Joi.object({
-    title: Joi.string().required(),
+    title: Joi.string().min(5).required(),
     description: Joi.string().allow(''),
     isActive: Joi.boolean().required()
   });

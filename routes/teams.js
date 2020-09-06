@@ -8,26 +8,27 @@ const asyncMiddleware = require('../middleware/async');
 const validateObjId = require('../middleware/validateObjectId');
 
 const {
-  getTeamInfo,
+  getTeamListWithAuthToken,
+  getTeamListWithoutAuthToken,
   postTeamInfo,
-  deleteTeamInfo,
-  updateTeamInfo,
   getTeamInfoById,
+  deleteTeamInfoById,
+  updateTeamInfoById,
   getTeamCategoryWithAuthToken,
   getTeamCategoryWithoutAuthToken,
   postTeamCategory,
   getTeamCategoryById,
   updateTeamCategoryById,
   deleteTeamCategoryById,
-  deleteTeamCategoryByIdPermanently
+  // deleteTeamCategoryByIdPermanently
 } = require('../controllers/team.controller');
 
 const router = express.Router();
 
-// router.get('/', asyncMiddleware(getTeamInfo));
+router.get('/', asyncMiddleware(getTeamListWithoutAuthToken));
 router.get('/category', asyncMiddleware(getTeamCategoryWithoutAuthToken));
 
-router.get('/all', [auth], asyncMiddleware(getTeamInfo));
+router.get('/all', [auth], asyncMiddleware(getTeamListWithAuthToken));
 router.get('/category/all', [auth], asyncMiddleware(getTeamCategoryWithAuthToken));
 
 router.post('/', [auth, upload], asyncMiddleware(postTeamInfo));
@@ -36,13 +37,13 @@ router.post('/category', [auth], asyncMiddleware(postTeamCategory));
 router.get('/:id', [auth, validateObjId], asyncMiddleware(getTeamInfoById));
 router.get('/category/:id', [auth, validateObjId], asyncMiddleware(getTeamCategoryById));
 
-router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateTeamInfo));
+router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateTeamInfoById));
 router.put('/category/:id', [auth, validateObjId], asyncMiddleware(updateTeamCategoryById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamInfo));
+router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamInfoById));
 router.delete('/category/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamCategoryById));
 
-router.delete('/category/permanently/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamCategoryByIdPermanently));
+// router.delete('/category/permanently/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamCategoryByIdPermanently));
 
 
 
