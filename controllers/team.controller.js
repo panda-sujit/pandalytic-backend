@@ -135,7 +135,7 @@ exports.updateTeamInfoById = async (req, res) => {
       if (!result) throw error;
       req.body.imageUri = result.secure_url;
     }
-    const updatedTeamMemberDetailObj = await TeamCategory.findByIdAndUpdate(
+    const updatedTeamMemberDetailObj = await Team.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
