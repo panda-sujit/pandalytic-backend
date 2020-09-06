@@ -1,41 +1,14 @@
-const cors = require('cors');
 const config = require('config');
 const express = require('express');
 // const morgan = require('morgan');
 
 const app = express();
-// const corsOption = {
-//   'allowedHeaders': ['Authorization', 'Content-Type'],
-//   'origin': '*',
-//   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   'preflightContinue': false
-// }
-// app.use(cors(corsOption));
-// app.options('*', cors(corsOption));
-
-// app.use(cors());
-// app.use(cors({origin: '*'}));
 
 // Add headers
 app.use(function (req, res, next) {
-
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'DELETE, GET, POST, PUT, PATCH');
-
-  // Website you wish to allow to connect
-  // res.setHeader("Access-Control-Allow-Origin", "*");
-
-  // Request methods you wish to allow
-  // res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-
-  // Request headers you wish to allow
-  // res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,Access-Control-Allow-Headers,Origin,content-type,x-auth-token,Authorization,Content-Type,Accept,application/json");
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  // res.setHeader("Access-Control-Allow-Credentials", true);
-
   // Pass to next layer of middleware
   next();
 });
