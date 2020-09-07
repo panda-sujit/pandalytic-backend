@@ -73,7 +73,23 @@ exports.getTeamListWithoutAuthToken = async (req, res) => {
       .select(selectQuery)
       .sort(sortQuery)
       .populate(populate);
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamList, 'Team List get successfully.', null, null, null);
+
+    let teamCategories = await TeamCategory
+      .find({ isActive: true })
+      .select('title');
+
+    let categoriedDataObj = new Object();
+    teamCategories.map((teamCategory) => {
+      let arrList = new Array();
+      teamList.map(team => {
+        if (teamCategory.title === team.teamCategory.title) {
+          arrList.push(team)
+        }
+      })
+      categoriedDataObj[teamCategory.title] = arrList;
+    });
+
+    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, categoriedDataObj, 'Team List get successfully.', null, null, null);
   } catch (error) {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
@@ -103,6 +119,7 @@ exports.deleteTeamInfoById = async (req, res) => {
   try {
     const teamMemberDetailObj = await Team.findByIdAndUpdate(req.params.id, {
       $set: {
+        isActive: false,
         isDeleted: true,
         deletedAt: new Date(),
       },
