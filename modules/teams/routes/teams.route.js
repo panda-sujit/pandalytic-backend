@@ -1,11 +1,11 @@
 const express = require('express');
 
-require('../middleware/cloudinary');
-const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
-const upload = require('../middleware/multer');
-const asyncMiddleware = require('../middleware/async');
-const validateObjId = require('../middleware/validateObjectId');
+require('../../../middleware/cloudinary');
+const auth = require('../../../middleware/auth');
+const admin = require('../../../middleware/admin');
+const upload = require('../../../middleware/multer');
+const asyncMiddleware = require('../../../middleware/async');
+const validateObjId = require('../../../middleware/validateObjectId');
 
 const {
   getTeamListWithAuthToken,

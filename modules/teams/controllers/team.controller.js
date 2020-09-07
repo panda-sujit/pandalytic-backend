@@ -1,10 +1,10 @@
 const cloudinary = require('cloudinary');
 const httpStatus = require('http-status');
 
-const commonHelper = require('../helpers/common.helper');
+const commonHelper = require('../../../helpers/common.helper');
 
-const { Team, validate } = require('../models/team');
-const { TeamCategory, validateTeamCategoryInfo } = require('../models/teamCategory');
+const { Team, validate } = require('../models/team.model');
+const { TeamCategory, validateTeamCategoryInfo } = require('../models/teamCategory.model');
 
 /* ****************************************
  *
