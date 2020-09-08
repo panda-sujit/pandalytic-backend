@@ -23,8 +23,6 @@ const contactUsSchema = new mongoose.Schema({
   },
   organization: {
     type: String,
-    minlength: 5,
-    maxlength: 120
   },
   message: {
     type: String,
@@ -48,7 +46,7 @@ const validateContactUs = (reqContactUsQueries) => {
     message: Joi.string().min(120).required(),
     name: Joi.string().min(5).max(50).required(),
     phone: Joi.string().min(5).max(50).required(),
-    organization: Joi.string().min(5).max(120).allow(''),
+    organization: Joi.string().allow(''),
     email: Joi.string().min(5).max(255).required().email(),
   });
   return schema.validate(reqContactUsQueries);
