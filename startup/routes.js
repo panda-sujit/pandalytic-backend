@@ -5,13 +5,13 @@ const auth = require('../routes/auth');
 const home = require('../routes/home');
 const blogs = require('../routes/blogs');
 const users = require('../routes/users');
-const careers = require('../routes/career');
 const pricings = require('../routes/pricings');
 const newsfeed = require('../routes/newsFeed');
 const contactus = require('../routes/contactus');
-const testimonials = require('../routes/testimonial');
 const teams = require('../modules/teams/routes/teams.route');
+const careers = require('../modules/careers/routes/careers.route');
 const projects = require('../modules/projects/routes/projects.route');
+const testimonials = require('../modules/testimonials/routes/testimonials.route');
 
 const error = require('../middleware/error');
 

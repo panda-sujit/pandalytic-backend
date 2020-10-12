@@ -3,8 +3,15 @@ const httpStatus = require('http-status');
 
 const commonHelper = require('../../../helpers/common.helper');
 
-const { Team, validate } = require('../models/team.model');
-const { TeamCategory, validateTeamCategoryInfo } = require('../models/teamCategory.model');
+const {
+  Team,
+  validate
+} = require('../models/team.model');
+
+const {
+  TeamCategory,
+  validateTeamCategoryInfo
+} = require('../models/teamCategory.model');
 
 /* ****************************************
  *

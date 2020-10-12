@@ -1,7 +1,10 @@
 const cloudinary = require('cloudinary');
 
 const covertToSlug = require('../helpers/slugify');
-const { NewsFeed, validate } = require('../models/newsFeed');
+const {
+  NewsFeed,
+  validate
+} = require('../models/newsFeed');
 
 
 exports.getNewsFeedList = async (req, res) => {

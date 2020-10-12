@@ -1,7 +1,10 @@
 const cloudinary = require('cloudinary');
 
 const covertToSlug = require('../helpers/slugify');
-const { Blog, validate } = require('../models/blog');
+const {
+  Blog,
+  validate
+} = require('../models/blog');
 
 
 exports.getBlogList = async (req, res) => {

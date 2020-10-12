@@ -5,7 +5,6 @@ const careerSchema = new mongoose.Schema({
   title: {
     type: String,
     trim: true,
-    minlength: 5,
     maxlength: 120,
     required: true,
   },
@@ -25,20 +24,33 @@ const careerSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    minlength: 120,
     required: true,
   },
   isActive: {
     type: Boolean,
     default: true
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   updatedAt: {
     type: Date,
-    default: Date.now
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
   }
 });
 
@@ -48,8 +60,8 @@ const validateCareer = (reqCareerData) => {
   const schema = Joi.object({
     tag: Joi.array().required(),
     applyDate: Joi.allow(''),
-    description: Joi.string().min(120).required(),
-    title: Joi.string().min(5).max(120).required(),
+    description: Joi.string().required(),
+    title: Joi.string().max(120).required(),
     opening: Joi.number().min(0).max(255).required(),
   });
   return schema.validate(reqCareerData)

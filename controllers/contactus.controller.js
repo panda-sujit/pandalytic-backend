@@ -1,6 +1,7 @@
-const cloudinary = require('cloudinary');
-
-const { ContactUs, validateContactUs } = require('../models/contactus');
+const {
+  ContactUs,
+  validateContactUs
+} = require('../models/contactus');
 
 
 exports.getContactUsQueries = async (req, res) => {
@@ -40,29 +41,4 @@ exports.getContactUsQueriesById = async (req, res) => {
   if (!query) return res.status(404).send('The query with the given ID was not found.');
   res.status(200).send(query);
 }
-
-// exports.updateTeamInfo = async (req, res) => {
-//   let result;
-//   const response = await Team.findById(req.params.id);
-
-//   if (!response) return res.status(404).send('The team info with the given ID was not found');
-
-//   if (req.file) {
-//     try {
-//       result = await cloudinary.v2.uploader.upload(req.file.path);
-//       req.body['imageUri'] = result.secure_url;
-//     } catch (exceptionError) {
-//       return res.status(400).send({
-//         error: exceptionError,
-//         message: 'Error while uploading image please try again later.'
-//       });
-//     }
-//   }
-//   req.body['updatedAt'] = Date.now();
-
-//   const teamInfoUpdated = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-//   if (!teamInfoUpdated) return res.status(404).send('The team info with the given ID was not found');
-//   res.status(200).send(teamInfoUpdated);
-// }
 
