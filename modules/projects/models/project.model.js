@@ -13,7 +13,6 @@ const projectSchema = new mongoose.Schema({
   },
   projectDescription: {
     type: String,
-    minlength: 120,
     required: true
   },
   projectLink: {
@@ -27,15 +26,29 @@ const projectSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
-    default: false,
+    default: true,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   updatedAt: {
     type: Date,
-    default: Date.now
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
   }
 });
 
@@ -45,9 +58,9 @@ const validateProjectInfo = (reqProjectInfo) => {
   const schema = Joi.object({
     tag: Joi.array().required(),
     imageUri: Joi.string().allow(''),
+    projectDescription: Joi.string().required(),
+    projectTitle: Joi.string().max(120).required(),
     projectLink: Joi.string().min(5).max(255).allow(''),
-    projectDescription: Joi.string().min(120).required(),
-    projectTitle: Joi.string().min(5).max(120).required(),
   });
   return schema.validate(reqProjectInfo);
 }

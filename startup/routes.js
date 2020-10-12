@@ -6,12 +6,12 @@ const home = require('../routes/home');
 const blogs = require('../routes/blogs');
 const users = require('../routes/users');
 const careers = require('../routes/career');
-const projects = require('../routes/project');
 const pricings = require('../routes/pricings');
 const newsfeed = require('../routes/newsFeed');
 const contactus = require('../routes/contactus');
 const testimonials = require('../routes/testimonial');
 const teams = require('../modules/teams/routes/teams.route');
+const projects = require('../modules/projects/routes/projects.route');
 
 const error = require('../middleware/error');
 
