@@ -2,15 +2,15 @@
 const express = require('express');
 
 const auth = require('../routes/auth');
-const home = require('../routes/home');
-const blogs = require('../routes/blogs');
 const users = require('../routes/users');
-const pricings = require('../routes/pricings');
-const newsfeed = require('../routes/newsFeed');
-const contactus = require('../routes/contactus');
+const home = require('../modules/home/routes/home.route');
+const blogs = require('../modules/blogs/routes/blog.route');
 const teams = require('../modules/teams/routes/teams.route');
 const careers = require('../modules/careers/routes/careers.route');
+const newsfeed = require('../modules/newsfeed/routes/newsfeed.route');
+const pricings = require('../modules/pricings/routes/pricings.route');
 const projects = require('../modules/projects/routes/projects.route');
+const contactus = require('../modules/contactus/routes/contactus.route');
 const testimonials = require('../modules/testimonials/routes/testimonials.route');
 
 const error = require('../middleware/error');

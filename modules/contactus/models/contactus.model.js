@@ -4,13 +4,11 @@ const mongoose = require('mongoose');
 const contactUsSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: 5,
     maxlength: 50,
     required: true
   },
   email: {
     type: String,
-    minlength: 5,
     maxlength: 255,
     required: true,
     lowercase: true,
@@ -18,7 +16,6 @@ const contactUsSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    minlength: 5,
     maxlength: 50
   },
   organization: {
@@ -26,16 +23,33 @@ const contactUsSchema = new mongoose.Schema({
   },
   message: {
     type: String,
-    minlength: 120,
     required: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   updatedAt: {
     type: Date,
-    default: Date.now
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
   }
 });
 
@@ -43,11 +57,11 @@ const ContactUs = mongoose.model('ContactUs', contactUsSchema);
 
 const validateContactUs = (reqContactUsQueries) => {
   const schema = Joi.object({
-    message: Joi.string().min(120).required(),
-    name: Joi.string().min(5).max(50).required(),
-    phone: Joi.string().min(5).max(50).required(),
+    message: Joi.string().required(),
     organization: Joi.string().allow(''),
-    email: Joi.string().min(5).max(255).required().email(),
+    name: Joi.string().max(50).required(),
+    phone: Joi.string().max(50).required(),
+    email: Joi.string().max(255).required().email(),
   });
   return schema.validate(reqContactUsQueries);
 }

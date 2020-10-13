@@ -30,15 +30,29 @@ const pricingSchema = new mongoose.Schema({
   ],
   isActive: {
     type: Boolean,
-    default: false
+    default: true
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   updatedAt: {
     type: Date,
-    default: Date.now
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
   }
 });
 
@@ -46,10 +60,10 @@ const Pricing = mongoose.model('Pricing', pricingSchema);
 
 const validatePricingInfo = (reqPricingInfo) => {
   const schema = Joi.object({
-    pricingCategory: Joi.string().required(),
-    pricingRatePerMonth: Joi.number().min(1).required(),
-    pricingRatePerYear: Joi.number().min(1).required(),
     features: Joi.array().required(),
+    pricingCategory: Joi.string().required(),
+    pricingRatePerYear: Joi.number().min(1).required(),
+    pricingRatePerMonth: Joi.number().min(1).required(),
   });
   return schema.validate(reqPricingInfo);
 }
