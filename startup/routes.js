@@ -1,4 +1,4 @@
-// const cors = require('cors');
+const cors = require('cors');
 const express = require('express');
 
 const auth = require('../routes/auth');
@@ -17,7 +17,7 @@ const testimonials = require('../modules/testimonials/routes/testimonials.route'
 const error = require('../middleware/error');
 
 module.exports = function (app) {
-  // app.use(cors());
+  app.use(cors());
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
