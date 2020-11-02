@@ -6,7 +6,7 @@ const users = require('../routes/users');
 const home = require('../modules/home/routes/home.route');
 const blogs = require('../modules/blogs/routes/blog.route');
 const teams = require('../modules/teams/routes/teams.route');
-const quotes = require('../modules/quotes/routes/quotes.route');
+// const quotes = require('../modules/quotes/routes/quotes.route');
 const careers = require('../modules/careers/routes/careers.route');
 const newsfeed = require('../modules/newsfeed/routes/newsfeed.route');
 const pricings = require('../modules/pricings/routes/pricings.route');
@@ -28,7 +28,7 @@ module.exports = function (app) {
   app.use('/api/blogs', blogs)
   app.use('/api/users', users);
   app.use('/api/teams', teams);
-  app.use('/api/quotes', quotes);
+  // app.use('/api/quotes', quotes);
   app.use('/api/careers', careers);
   app.use('/api/projects', projects);
   app.use('/api/pricings', pricings);
