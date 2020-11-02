@@ -15,7 +15,7 @@ const {
   updateNewsFeedById,
   getNewsFeedListWithAuthToken,
   getNewsFeedListWithoutAuthToken,
-} = require('../controllers/newsFeed.controller');
+} = require('../controllers/newsfeed.controller');
 
 const router = express.Router();
 
