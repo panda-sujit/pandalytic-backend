@@ -16,6 +16,7 @@ const quoteSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
+    required: true,
     default: true,
   },
   createdBy: {
@@ -49,6 +50,7 @@ const validateQuoteInfo = (reqQuoteInfo) => {
     quote: Joi.string().required(),
     quoteBy: Joi.string().required(),
     imageUri: Joi.string().allow(''),
+    isActive: Joi.boolean().required(),
   });
   return schema.validate(reqQuoteInfo);
 }
