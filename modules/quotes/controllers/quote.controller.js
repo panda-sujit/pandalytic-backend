@@ -26,7 +26,7 @@ exports.getQuoteListWithAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'quote qouteBy imageUri tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    selectQuery = 'quote quoteBy imageUri tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
 
     if (req.query.name) {
       searchQuery = {
