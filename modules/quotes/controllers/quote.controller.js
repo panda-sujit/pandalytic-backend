@@ -150,7 +150,7 @@ exports.updateQuoteInfoById = async (req, res) => {
       req.bodt.imageUri = result.secure_url;
     }
 
-    const updateQuoteInfoObj = await Quote.findOneAndUpdate(
+    const updateQuoteInfoObj = await Quote.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,

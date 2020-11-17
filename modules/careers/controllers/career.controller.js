@@ -132,7 +132,7 @@ exports.updateCareerInfoById = async (req, res) => {
   try {
     req.body.updatedAt = new Date();
 
-    const updateCareerInfoObj = await Career.findOneAndUpdate(
+    const updateCareerInfoObj = await Career.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,

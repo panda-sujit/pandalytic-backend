@@ -166,7 +166,7 @@ exports.updateBlogById = async (req, res) => {
       req.body.slug = covertToSlug(req.body.title);
     }
 
-    const updateBlogInfoObj = await Blog.findOneAndUpdate(
+    const updateBlogInfoObj = await Blog.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,

@@ -134,7 +134,7 @@ exports.updatePricingInfoById = async (req, res) => {
     req.body.updatedAt = new Date();
 
     const updatePricingInfoObj = await Pricing
-      .findOneAndUpdate(
+      .findByIdAndUpdate(
         req.params.id,
         {
           $set: req.body,

@@ -145,7 +145,7 @@ exports.updateTestimonialInfoById = async (req, res) => {
       req.bodt.imageUri = result.secure_url;
     }
 
-    const updateTestimonialInfoObj = await Testimonial.findOneAndUpdate(
+    const updateTestimonialInfoObj = await Testimonial.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,

@@ -19,11 +19,11 @@ exports.getProjectListWithAuthToken = async (req, res) => {
     let { page, limit, populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
 
     populate = [
-      {
-        path: 'user',
-        model: 'User',
-        select: 'name'
-      },
+      // {
+      //   path: 'user',
+      //   model: 'User',
+      //   select: 'name'
+      // },
     ]
 
     selectQuery = 'projectTitle projectDescription projectLink imageUri tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
@@ -150,7 +150,7 @@ exports.updateProjectInfoById = async (req, res) => {
       req.bodt.imageUri = result.secure_url;
     }
 
-    const updateProjectInfoObj = await Project.findOneAndUpdate(
+    const updateProjectInfoObj = await Project.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,

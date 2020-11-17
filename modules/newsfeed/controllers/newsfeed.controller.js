@@ -166,7 +166,7 @@ exports.updateNewsFeedById = async (req, res) => {
       req.body.slug = covertToSlug(req.body.title);
     }
 
-    const updateNewsFeedInfoObj = await NewsFeed.findOneAndUpdate(
+    const updateNewsFeedInfoObj = await NewsFeed.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
