@@ -26,6 +26,7 @@ const projectSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
+    required: true,
     default: true,
   },
   createdBy: {
@@ -58,6 +59,7 @@ const validateProjectInfo = (reqProjectInfo) => {
   const schema = Joi.object({
     tag: Joi.array().required(),
     imageUri: Joi.string().allow(''),
+    isActive: Joi.boolean().required(),
     projectDescription: Joi.string().required(),
     projectTitle: Joi.string().max(120).required(),
     projectLink: Joi.string().min(5).max(255).allow(''),

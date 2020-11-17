@@ -27,6 +27,7 @@ const testimonialSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
+    required: true,
     default: true,
   },
   createdBy: {
@@ -60,6 +61,7 @@ const validateTestimonialInfo = (reqTestimonialInfo) => {
     imageUri: Joi.string().allow(''),
     message: Joi.string().required(),
     organization: Joi.string().max(50),
+    isActive: Joi.boolean().required(),
     messageBy: Joi.string().max(50).required(),
     designation: Joi.string().max(50).required(),
   });
