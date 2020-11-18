@@ -26,6 +26,9 @@ const careerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  experience: {
+    type: String
+  },
   isActive: {
     type: Boolean,
     required: true,
@@ -61,6 +64,7 @@ const validateCareer = (reqCareerData) => {
   const schema = Joi.object({
     tag: Joi.array().required(),
     applyDate: Joi.allow(''),
+    experience: Joi.string().required(),
     isActive: Joi.boolean().required(),
     description: Joi.string().required(),
     title: Joi.string().max(120).required(),
