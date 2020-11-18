@@ -25,7 +25,7 @@ exports.getCareerListWithoutAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'title opening applyDate description tag createdAt';
+    selectQuery = 'title opening applyDate description experience tag createdAt';
 
     searchQuery = {
       isActive: true,
@@ -66,7 +66,7 @@ exports.getCareerListWithAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'title opening applyDate description tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    selectQuery = 'title opening applyDate description experience tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
 
     if (req.query.name) {
       searchQuery = {
