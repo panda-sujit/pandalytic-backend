@@ -1,6 +1,6 @@
 {
   "jwtPrivateKey": "",
-  "db": "mongodb://pandalytic:T3chn0l0gy@ds121636.mlab.com:21636/db_pandalytic_cms",
+  "db": "mongodb+srv://pandalytic-admin:T3chn0l0gy@pandalytic-cluster.waaq6.mongodb.net/db_pandalytic?retryWrites=true&w=majority",
   "port": "3000",
   "requiresAuth": false
 }
