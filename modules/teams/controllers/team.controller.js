@@ -59,7 +59,7 @@ exports.getTeamListWithoutAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'name designation shortDescription teamCategory imageUri media createdAt';
+    selectQuery = 'name designation shortDescription teamCategory joinedOn imageUri media createdAt';
 
     searchQuery = {
       isActive: true,
@@ -71,6 +71,7 @@ exports.getTeamListWithoutAuthToken = async (req, res) => {
           $regex: req.query.name,
           $options: 'i',
         },
+        joinedOn:-1,
         ...searchQuery,
       };
     }
@@ -297,4 +298,3 @@ exports.updateTeamCategoryById = async (req, res) => {
 //     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
 //   }
 // }
-
