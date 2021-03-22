@@ -112,6 +112,8 @@ exports.getTeamListWithoutAuthToken = async (req, res) => {
       };
     }
 
+    sortQuery = { joinDate: 1 };
+
     let teamList = await Team.find(searchQuery)
       .select(selectQuery)
       .sort(sortQuery)
