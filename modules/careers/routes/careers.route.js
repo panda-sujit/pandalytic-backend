@@ -12,11 +12,14 @@ const {
   deleteCareerInfoById,
   getCareerListWithAuthToken,
   getCareerListWithoutAuthToken,
+  getCareerBySlug
 } = require('../controllers/career.controller');
 
 const router = express.Router();
 
 router.get('/', asyncMiddleware(getCareerListWithoutAuthToken));
+
+router.get('/:slug', asyncMiddleware(getCareerBySlug));
 
 router.get('/all', [auth], asyncMiddleware(getCareerListWithAuthToken));
 

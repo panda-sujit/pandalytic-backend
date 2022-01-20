@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 
 const commonHelper = require('../../../helpers/common.helper');
+const covertToSlug = require('../../../helpers/slugify');
 
 const {
   Career,
@@ -25,7 +26,7 @@ exports.getCareerListWithoutAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'title opening applyDate description experience tag createdAt';
+    selectQuery = 'title slug opening applyDate description experience tag createdAt';
 
     searchQuery = {
       isActive: true,
@@ -66,7 +67,7 @@ exports.getCareerListWithAuthToken = async (req, res) => {
       },
     ]
 
-    selectQuery = 'title opening applyDate description experience tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    selectQuery = 'title slug opening applyDate description responsibilities qualifications experience tag isActive isDeleted createdBy createdAt updatedAt updatedBy';
 
     if (req.query.name) {
       searchQuery = {
@@ -89,6 +90,8 @@ exports.postCareerInfo = async (req, res) => {
   try {
     const { error } = validateCareer(req.body);
     if (error) throw error;
+
+    req.body.slug = covertToSlug(req.body.title);
 
     const newCareerObj = new Career(req.body);
     const savedData = await newCareerObj.save();
@@ -148,3 +151,16 @@ exports.updateCareerInfoById = async (req, res) => {
   }
 }
 
+exports.getCareerBySlug = async (req, res) => {
+  try {
+    const careerObj = await Career
+      .find({ slug: req.params.slug })
+      .populate([
+        { path: 'user', model: 'User', select: 'name' },
+      ]);
+    if (!careerObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, careerObj, null, 'The career info with the given slug title was not found.', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, careerObj, null, 'Career info found.', null);
+  } catch (error) {
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+  }
+}

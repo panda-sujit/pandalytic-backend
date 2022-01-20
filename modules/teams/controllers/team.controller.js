@@ -3,10 +3,7 @@ const httpStatus = require('http-status');
 
 const commonHelper = require('../../../helpers/common.helper');
 
-const {
-  Team,
-  validate
-} = require('../models/team.model');
+const { Team, validate } = require('../models/team.model');
 
 const {
   TeamCategory,
@@ -21,87 +18,144 @@ const {
 
 exports.getTeamListWithAuthToken = async (req, res) => {
   try {
-    let { page, limit, populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 10, false);
+    let {
+      page,
+      limit,
+      populate,
+      selectQuery,
+      searchQuery,
+      sortQuery
+    } = commonHelper.parseFilters(req, 10, false);
     populate = [
       {
         path: 'teamCategory',
         model: 'TeamCategory',
         select: 'title'
-      },
-    ]
+      }
+    ];
 
-    selectQuery = 'name designation shortDescription teamCategory imageUri media isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    selectQuery =
+      'name designation shortDescription teamCategory imageUri media joinDate isActive isDeleted createdBy createdAt updatedAt updatedBy';
     if (req.query.name) {
       searchQuery = {
         name: {
           $regex: req.query.name,
-          $options: 'i',
+          $options: 'i'
         },
-        ...searchQuery,
+        ...searchQuery
       };
     }
-    let teamList = await commonHelper.getQueryRequest(Team, page, limit, sortQuery, searchQuery, selectQuery, populate);
+    let teamList = await commonHelper.getQueryRequest(
+      Team,
+      page,
+      limit,
+      sortQuery,
+      searchQuery,
+      selectQuery,
+      populate
+    );
 
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamList.data, 'Team List get successfully.', page, limit, teamList.totalData, teamList.totalPages);
+    return commonHelper.paginationSendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamList.data,
+      'Team List get successfully.',
+      page,
+      limit,
+      teamList.totalData,
+      teamList.totalPages
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.getTeamListWithoutAuthToken = async (req, res) => {
   try {
-    let { populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
+    let {
+      populate,
+      selectQuery,
+      searchQuery,
+      sortQuery
+    } = commonHelper.parseFilters(req, 12, false);
     populate = [
       {
         path: 'teamCategory',
         model: 'TeamCategory',
         select: 'title'
-      },
-    ]
+      }
+    ];
 
-    selectQuery = 'name designation shortDescription teamCategory joinedOn imageUri media createdAt';
+    selectQuery =
+      'name designation shortDescription teamCategory imageUri media joinDate createdAt';
 
     searchQuery = {
       isActive: true,
-      ...searchQuery,
+      ...searchQuery
     };
     if (req.query.name) {
       searchQuery = {
         name: {
           $regex: req.query.name,
-          $options: 'i',
+          $options: 'i'
         },
-        joinedOn:-1,
-        ...searchQuery,
+        ...searchQuery
       };
     }
 
-    let teamList = await Team
-      .find(searchQuery)
+    sortQuery = { joinDate: 1 };
+
+    let teamList = await Team.find(searchQuery)
       .select(selectQuery)
       .sort(sortQuery)
       .populate(populate);
 
-    let teamCategories = await TeamCategory
-      .find({ isActive: true })
-      .select('title');
+    let teamCategories = await TeamCategory.find({ isActive: true }).select(
+      'title'
+    );
 
     let categoriedDataObj = new Object();
-    teamCategories.map((teamCategory) => {
+    teamCategories.map(teamCategory => {
       let arrList = new Array();
       teamList.map(team => {
         if (teamCategory.title === team.teamCategory.title) {
-          arrList.push(team)
+          arrList.push(team);
         }
-      })
+      });
       categoriedDataObj[teamCategory.title] = arrList;
     });
 
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, categoriedDataObj, 'Team List get successfully.', null, null, null);
+    return commonHelper.paginationSendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      categoriedDataObj,
+      'Team List get successfully.',
+      null,
+      null,
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.postTeamInfo = async (req, res) => {
   try {
@@ -117,11 +171,27 @@ exports.postTeamInfo = async (req, res) => {
 
     const newTeamObj = new Team(req.body);
     const savedData = await newTeamObj.save();
-    return commonHelper.sendResponse(res, httpStatus.OK, true, savedData, null, 'Team Member has been save successfully.', null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      savedData,
+      null,
+      'Team Member has been save successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error.details[0].message, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error.details[0].message,
+      null
+    );
   }
-}
+};
 
 exports.deleteTeamInfoById = async (req, res) => {
   try {
@@ -129,27 +199,77 @@ exports.deleteTeamInfoById = async (req, res) => {
       $set: {
         isActive: false,
         isDeleted: true,
-        deletedAt: new Date(),
-      },
+        deletedAt: new Date()
+      }
     });
-    if (!teamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamMemberDetailObj, null, 'The team member details with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamMemberDetailObj, null, 'Team Member Details is deleted successfully.', null);
+    if (!teamMemberDetailObj)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        teamMemberDetailObj,
+        null,
+        'The team member details with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamMemberDetailObj,
+      null,
+      'Team Member Details is deleted successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.getTeamInfoById = async (req, res) => {
   try {
     const teamMemberDetailObj = await Team.findById(req.params.id).populate([
-      { path: 'teamCategory', model: 'TeamCategory', select: 'title' },
+      { path: 'teamCategory', model: 'TeamCategory', select: 'title' }
     ]);
-    if (!teamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamMemberDetailObj, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamMemberDetailObj, null, 'Team Member Details Found.', null);
+    if (!teamMemberDetailObj)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        teamMemberDetailObj,
+        null,
+        'The team category with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamMemberDetailObj,
+      null,
+      'Team Member Details Found.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.updateTeamInfoById = async (req, res) => {
   try {
@@ -163,16 +283,41 @@ exports.updateTeamInfoById = async (req, res) => {
     const updatedTeamMemberDetailObj = await Team.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body
       },
-      { new: true },
+      { new: true }
     );
-    if (!updatedTeamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, updatedTeamMemberDetailObj, null, 'The team member detail with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, updatedTeamMemberDetailObj, null, 'The team member detail with the given ID is updated successfully.', null);
+    if (!updatedTeamMemberDetailObj)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        updatedTeamMemberDetailObj,
+        null,
+        'The team member detail with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      updatedTeamMemberDetailObj,
+      null,
+      'The team member detail with the given ID is updated successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 /* ****************************************
  *
@@ -182,56 +327,109 @@ exports.updateTeamInfoById = async (req, res) => {
 
 exports.getTeamCategoryWithAuthToken = async (req, res) => {
   try {
-    let { page, limit, populate, selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 10, false);
+    let {
+      page,
+      limit,
+      populate,
+      selectQuery,
+      searchQuery,
+      sortQuery
+    } = commonHelper.parseFilters(req, 10, false);
 
-    selectQuery = 'title description isActive isDeleted createdBy createdAt updatedAt updatedBy';
+    selectQuery =
+      'title description isActive isDeleted createdBy createdAt updatedAt updatedBy';
     if (req.query.title) {
       searchQuery = {
         title: {
           $regex: req.query.title,
-          $options: 'i',
+          $options: 'i'
         },
-        ...searchQuery,
+        ...searchQuery
       };
     }
-    let teamCategory = await commonHelper.getQueryRequest(TeamCategory, page, limit, sortQuery, searchQuery, selectQuery, populate);
+    let teamCategory = await commonHelper.getQueryRequest(
+      TeamCategory,
+      page,
+      limit,
+      sortQuery,
+      searchQuery,
+      selectQuery,
+      populate
+    );
 
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory.data, 'Team Category get successfully.', page, limit, teamCategory.totalData, teamCategory.totalPages);
+    return commonHelper.paginationSendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamCategory.data,
+      'Team Category get successfully.',
+      page,
+      limit,
+      teamCategory.totalData,
+      teamCategory.totalPages
+    );
   } catch (error) {
-
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.getTeamCategoryWithoutAuthToken = async (req, res) => {
   try {
-    let { selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(req, 12, false);
+    let { selectQuery, searchQuery, sortQuery } = commonHelper.parseFilters(
+      req,
+      12,
+      false
+    );
 
     selectQuery = 'title description createdAt';
 
     searchQuery = {
       isActive: true,
-      ...searchQuery,
+      ...searchQuery
     };
     if (req.query.name) {
       searchQuery = {
         name: {
           $regex: req.query.name,
-          $options: 'i',
+          $options: 'i'
         },
-        ...searchQuery,
+        ...searchQuery
       };
     }
 
-    let teamCategory = await TeamCategory
-      .find(searchQuery)
+    let teamCategory = await TeamCategory.find(searchQuery)
       .select(selectQuery)
-      .sort(sortQuery)
-    return commonHelper.paginationSendResponse(res, httpStatus.OK, true, teamCategory, 'Team Category get successfully.', null, null, null);
+      .sort(sortQuery);
+    return commonHelper.paginationSendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamCategory,
+      'Team Category get successfully.',
+      null,
+      null,
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.postTeamCategory = async (req, res) => {
   try {
@@ -240,36 +438,102 @@ exports.postTeamCategory = async (req, res) => {
 
     const newTeamCategory = new TeamCategory(req.body);
     const savedData = await newTeamCategory.save();
-    return commonHelper.sendResponse(res, httpStatus.OK, true, savedData, null, 'Team Category has been created successfully.', null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      savedData,
+      null,
+      'Team Category has been created successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error.details[0].message, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error.details[0].message,
+      null
+    );
   }
-}
+};
 
 exports.deleteTeamCategoryById = async (req, res) => {
   try {
     const teamCategory = await TeamCategory.findByIdAndUpdate(req.params.id, {
       $set: {
         isDeleted: true,
-        deletedAt: new Date(),
-      },
+        deletedAt: new Date()
+      }
     });
-    if (!teamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamCategory, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category is deleted successfully.', null);
+    if (!teamCategory)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        teamCategory,
+        null,
+        'The team category with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamCategory,
+      null,
+      'Team Category is deleted successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.getTeamCategoryById = async (req, res) => {
   try {
     const teamCategory = await TeamCategory.findById(req.params.id);
-    if (!teamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamCategory, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, teamCategory, null, 'Team Category Found.', null);
+    if (!teamCategory)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        teamCategory,
+        null,
+        'The team category with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      teamCategory,
+      null,
+      'Team Category Found.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 exports.updateTeamCategoryById = async (req, res) => {
   try {
@@ -278,16 +542,41 @@ exports.updateTeamCategoryById = async (req, res) => {
     const updatedTeamCategory = await TeamCategory.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body
       },
-      { new: true },
+      { new: true }
     );
-    if (!updatedTeamCategory) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, updatedTeamCategory, null, 'The team category with the given ID was not found.', null);
-    return commonHelper.sendResponse(res, httpStatus.OK, true, updatedTeamCategory, null, 'The team category with the given ID is updated successfully.', null);
+    if (!updatedTeamCategory)
+      return commonHelper.sendResponse(
+        res,
+        httpStatus.NOT_FOUND,
+        true,
+        updatedTeamCategory,
+        null,
+        'The team category with the given ID was not found.',
+        null
+      );
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.OK,
+      true,
+      updatedTeamCategory,
+      null,
+      'The team category with the given ID is updated successfully.',
+      null
+    );
   } catch (error) {
-    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
+    return commonHelper.sendResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      false,
+      [],
+      null,
+      error,
+      null
+    );
   }
-}
+};
 
 // exports.deleteTeamCategoryByIdPermanently = async (req, res) => {
 //   try {

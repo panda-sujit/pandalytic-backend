@@ -19,30 +19,34 @@ const teamSchema = new mongoose.Schema({
     required: true
   },
   shortDescription: {
-    type: String,
+    type: String
   },
   teamCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'TeamCategory',
+    ref: 'TeamCategory'
   },
   media: {
-    type: mongoose.Schema.Types.Mixed,
+    type: mongoose.Schema.Types.Mixed
+  },
+  joinDate: {
+    type: Date,
+    default: Date.now
   },
   isActive: {
     type: Boolean,
     required: true,
-    default: true,
+    default: true
   },
   isDeleted: {
     type: Boolean,
-    default: false,
+    default: false
   },
   deletedAt: {
-    type: Date,
+    type: Date
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'User'
   },
   joinedOn: {
     type: Date,
@@ -54,28 +58,34 @@ const teamSchema = new mongoose.Schema({
     default: Date.now
   },
   updatedAt: {
-    type: Date,
+    type: Date
   },
   updatedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
+    ref: 'User'
+  }
 });
 
 const Team = mongoose.model('Team', teamSchema);
 
-const validateTeamInfo = (reqTeamInfo) => {
+const validateTeamInfo = reqTeamInfo => {
   const schema = Joi.object({
-    name: Joi.string().min(5).max(50).required(),
-    designation: Joi.string().min(5).max(50).required(),
+    name: Joi.string()
+      .min(5)
+      .max(50)
+      .required(),
+    designation: Joi.string()
+      .min(5)
+      .max(50)
+      .required(),
     imageUri: Joi.string().allow(''),
     teamCategory: Joi.string().required(),
     shortDescription: Joi.string().allow(''),
     isActive: Joi.boolean().required(),
     media: Joi.object()
   });
-  return schema.validate(reqTeamInfo)
-}
+  return schema.validate(reqTeamInfo);
+};
 
 exports.Team = Team;
 exports.teamSchema = teamSchema;
