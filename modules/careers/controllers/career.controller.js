@@ -134,6 +134,7 @@ exports.deleteCareerInfoById = async (req, res) => {
 exports.updateCareerInfoById = async (req, res) => {
   try {
     req.body.updatedAt = new Date();
+    req.body.slug = covertToSlug(req.body.title);
 
     const updateCareerInfoObj = await Career.findByIdAndUpdate(
       req.params.id,
