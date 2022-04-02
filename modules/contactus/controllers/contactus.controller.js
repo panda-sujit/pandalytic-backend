@@ -55,7 +55,7 @@ exports.postContactUsQueries = async (req, res) => {
     const savedData = await newQueryObj.save();
     return commonHelper.sendResponse(res, httpStatus.OK, true, savedData, null, 'Queries have been save successfully.', null);
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error.details[0].message, null);
   }
 }
@@ -73,4 +73,3 @@ exports.getContactUsQueriesById = async (req, res) => {
     return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
 }
-

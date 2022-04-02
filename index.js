@@ -40,3 +40,6 @@ module.exports = server;
 
 // Local db link
 // mongodb://localhost/db_cms
+
+// production db linkk
+// mongodb+srv://pandalytic-admin:T3chn0l0gy@pandalytic-cluster.waaq6.mongodb.net/db_pandalytic?retryWrites=true&w=majority
