@@ -51,7 +51,7 @@ const validateContentInfo = (reqContentInfo) => {
     description: Joi.string().required(),
     imageUri: Joi.string().allow(''),
     title: Joi.string().max(120).required(),
-    imageFile: Joi.object().allow(null)
+    imageFile: Joi.object().default({})
   });
   return schema.validate(reqContentInfo);
 }
