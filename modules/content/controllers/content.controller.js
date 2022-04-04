@@ -89,8 +89,8 @@ exports.getContentListWithoutAuthToken = async (req, res) => {
 exports.postContentInfo = async (req, res) => {
   try {
     let result;
-    const { error } = validateContentInfo(req.body);
-    if (error) throw error;
+    // const { error } = validateContentInfo(req.body);
+    // if (error) throw error;
 
     if (req.file) {
       result = await cloudinary.v2.uploader.upload(req.file.path);
