@@ -23,7 +23,14 @@ router.get('/', asyncMiddleware(getContentListWithoutAuthToken));
 
 router.get('/all', [auth], asyncMiddleware(getContentListWithAuthToken));
 
+// router.post('/', (req, res, next) => {
+//   console.log("i am here")
+//   return res.send({data: 'heelo'})
+// })
+
 router.post('/', [auth, upload], asyncMiddleware(postContentInfo));
+
+// router.post('/', [auth, upload], asyncMiddleware(postContentInfo));
 
 router.get('/:id', [auth, validateObjId], asyncMiddleware(getContentInfoById));
 

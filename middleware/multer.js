@@ -30,10 +30,10 @@ module.exports = function (req, res, next) {
     else if (err) {
       return res.send(err);
     }
-    else if (!req.file) {
-      next();
-      // if (req.method !== 'PUT') return res.send('Please select an image to upload');
-    }
+    // else if (!req.file) {
+    //   return;
+    //   // if (req.method !== 'PUT') return res.send('Please select an image to upload');
+    // }
     next();
   });
 }

@@ -88,19 +88,18 @@ exports.getContentListWithoutAuthToken = async (req, res) => {
 
 exports.postContentInfo = async (req, res) => {
   try {
+    let reqBody = JSON.parse(JSON.stringify(req.body));
     let result;
-    // const { error } = validateContentInfo(req.body);
-    // if (error) throw error;
 
     if (req.file) {
       result = await cloudinary.v2.uploader.upload(req.file.path);
       if (!result) throw error;
-      req.body.imageUri = result.secure_url;
+      reqBody.imageUri = result.secure_url;
     }
 
-    req.body.slug = covertToSlug(req.body.title);
+    reqBody.slug = covertToSlug(reqBody.title);
 
-    const newContentObj = new Content(req.body);
+    const newContentObj = new Content(reqBody);
 
     const savedData = await newContentObj.save();
     return commonHelper.sendResponse(res, httpStatus.OK, true, savedData, null, 'Content have been save successfully.', null);
