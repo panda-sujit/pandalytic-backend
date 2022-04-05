@@ -61,6 +61,7 @@ exports.getContentListWithoutAuthToken = async (req, res) => {
 
     searchQuery = {
       isActive: true,
+      isDeleted: false,
       ...searchQuery,
     };
 
