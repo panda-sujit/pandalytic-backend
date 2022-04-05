@@ -168,7 +168,7 @@ exports.updateContentInfoById = async (req, res) => {
 
 exports.getContentBySlug = async (req, res) => {
   try {
-    const contentObj = await Content.find({ slug: req.params.slug })
+    const contentObj = await Content.find({ slug: req.params.slug, isDeleted: false })
 
     if (!contentObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, contentObj, null, 'The content info with the given ID was not found.', null);
     return commonHelper.sendResponse(res, httpStatus.OK, true, contentObj, null, 'Content info found.', null);
