@@ -36,7 +36,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getContentInfoById));
 
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateContentInfoById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteContentInfoById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteContentInfoById));
 
 router.get('/slug/:slug', asyncMiddleware(getContentBySlug));
 
