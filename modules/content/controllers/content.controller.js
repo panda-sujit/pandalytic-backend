@@ -92,6 +92,9 @@ exports.postContentInfo = async (req, res) => {
     let reqBody = JSON.parse(JSON.stringify(req.body));
     let result;
 
+    const contentInfo = await Content.find({ title: req.body.title });
+    if (contentInfo.length !== 0) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, contentInfoObj, null, 'The content info with requested title is already exists.', null);
+
     if (req.file) {
       result = await cloudinary.v2.uploader.upload(req.file.path);
       if (!result) throw error;
