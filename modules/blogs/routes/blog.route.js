@@ -31,7 +31,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getBlogById));
 
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateBlogById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteBlogById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteBlogById));
 
 
 module.exports = router;

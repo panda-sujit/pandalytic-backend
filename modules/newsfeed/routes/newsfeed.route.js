@@ -31,7 +31,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getNewsFeedById));
 
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateNewsFeedById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteNewsFeedById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteNewsFeedById));
 
 
 module.exports = router;

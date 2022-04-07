@@ -26,7 +26,7 @@ router.get('/:id', [validateObjId], asyncMiddleware(getPricingInfoById));
 
 router.put('/:id', [auth, validateObjId], asyncMiddleware(updatePricingInfoById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deletePricingInfoById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deletePricingInfoById));
 
 
 module.exports = router;

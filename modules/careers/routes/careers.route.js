@@ -29,7 +29,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getCareerInfoById));
 
 router.put('/:id', [auth, validateObjId], asyncMiddleware(updateCareerInfoById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteCareerInfoById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteCareerInfoById));
 
 
 module.exports = router;

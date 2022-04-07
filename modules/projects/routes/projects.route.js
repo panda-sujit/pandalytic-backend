@@ -28,7 +28,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getProjectInfoById));
 
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateProjectInfoById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteProjectInfoById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteProjectInfoById));
 
 
 module.exports = router;
