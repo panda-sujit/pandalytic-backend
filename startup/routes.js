@@ -14,6 +14,7 @@ const projects = require('../modules/projects/routes/projects.route');
 const contactus = require('../modules/contactus/routes/contactus.route');
 const testimonials = require('../modules/testimonials/routes/testimonials.route');
 const content = require('../modules/content/routes/content.route');
+const documentary = require('../modules/documentary/routes/documentary.route');
 
 const error = require('../middleware/error');
 
@@ -37,6 +38,7 @@ module.exports = function (app) {
   app.use('/api/contactus', contactus);
   app.use('/api/testimonial', testimonials);
   app.use('/api/content', content);
+  app.use('/api/documentary', documentary);
 
   app.use(error)
 }
