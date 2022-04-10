@@ -28,7 +28,7 @@ router.get('/:id', [auth, validateObjId], asyncMiddleware(getTestimonialInfoById
 
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateTestimonialInfoById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTestimonialInfoById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteTestimonialInfoById));
 
 
 module.exports = router;

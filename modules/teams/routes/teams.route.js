@@ -40,8 +40,8 @@ router.get('/category/:id', [auth, validateObjId], asyncMiddleware(getTeamCatego
 router.put('/:id', [auth, validateObjId, upload], asyncMiddleware(updateTeamInfoById));
 router.put('/category/:id', [auth, validateObjId], asyncMiddleware(updateTeamCategoryById));
 
-router.delete('/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamInfoById));
-router.delete('/category/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamCategoryById));
+router.delete('/:id', [auth, validateObjId], asyncMiddleware(deleteTeamInfoById));
+router.delete('/category/:id', [auth, validateObjId], asyncMiddleware(deleteTeamCategoryById));
 
 // router.delete('/category/permanently/:id', [auth, admin, validateObjId], asyncMiddleware(deleteTeamCategoryByIdPermanently));
 
