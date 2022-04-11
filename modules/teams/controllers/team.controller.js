@@ -199,38 +199,13 @@ exports.deleteTeamInfoById = async (req, res) => {
       $set: {
         isActive: false,
         isDeleted: true,
-        deletedAt: new Date()
+        deletedAt: new Date(),
       }
     });
-    if (!teamMemberDetailObj)
-      return commonHelper.sendResponse(
-        res,
-        httpStatus.NOT_FOUND,
-        true,
-        teamMemberDetailObj,
-        null,
-        'The team member details with the given ID was not found.',
-        null
-      );
-    return commonHelper.sendResponse(
-      res,
-      httpStatus.OK,
-      true,
-      teamMemberDetailObj,
-      null,
-      'Team Member Details is deleted successfully.',
-      null
-    );
+    if (!teamMemberDetailObj) return commonHelper.sendResponse(res, httpStatus.NOT_FOUND, true, teamMemberDetailObj, null, 'The team member details with the given ID was not found.', null);
+    return commonHelper.sendResponse(res, httpStatus.OK, true, teamMemberDetailObj, null, 'The team member details is deleted successfully.', null);
   } catch (error) {
-    return commonHelper.sendResponse(
-      res,
-      httpStatus.INTERNAL_SERVER_ERROR,
-      false,
-      [],
-      null,
-      error,
-      null
-    );
+    return commonHelper.sendResponse(res, httpStatus.INTERNAL_SERVER_ERROR, false, [], null, error, null);
   }
 };
 
